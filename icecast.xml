@@ -1,0 +1,17 @@
+<icecast>
+    <location>Servidor Radio </location>
+    <admin>admin@localhost</admin>
+    <authentication>
+        <source-password>123</source-password>
+        <admin-user>admin</admin-user>
+        <admin-password>123</admin-password>
+    </authentication>
+    <listen-socket>
+        <port>8000</port>
+    </listen-socket>
+    <paths>
+        <logdir>/tmp</logdir>
+        <webroot>/usr/share/icecast2/web</webroot>
+        <adminroot>/usr/share/icecast2/admin</adminroot>
+    </paths>
+</icecast>
