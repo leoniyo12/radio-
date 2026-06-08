@@ -2,16 +2,15 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Radio Felina </title>
+    <title>Radio Felina Univalle</title>
     <style>
-        /* Transición suave para el fondo */
         body { 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
             color: #ffffff; 
             text-align: center; 
             padding-top: 10vh;
             margin: 0;
-            background-color: #FFFF00; /* Iniciamos con Amarillo Puro */
+            background-color: #FFFF00; 
             transition: background-color 1s ease; 
         }
         
@@ -74,12 +73,10 @@
             margin-top: 15px;
         }
 
-        /* OCULTAMOS EL REPRODUCTOR ORIGINAL */
         audio {
             display: none;
         }
 
-        /* VISUALIZADOR ANIMADO CSS */
         .visualizer {
             display: flex;
             align-items: flex-end;
@@ -140,15 +137,15 @@
         <p id="estado">▶ Transmisión en vivo...</p>
 
         <audio id="reproductor" controls autoplay preload="none">
-            <source src="http://localhost:8000/ruso" type="audio/mpeg">
+            <source src="https://2022996070871b.lhr.life/ruso" type="audio/mpeg">
         </audio>
     </div>
 
     <script>
         const estaciones = [
-            { id: "ruso", nombre: "Estación Ruso", color: "#FFFF00" },    // Amarillo Puro
-            { id: "pancho", nombre: "Estación Pancho", color: "#0000FF" },  // Azul Puro
-            { id: "gata", nombre: "Estación Gata", color: "#FF0000" }       // Rojo Puro
+            { id: "ruso", nombre: "Estación Ruso", color: "#FFFF00" },    
+            { id: "pancho", nombre: "Estación Pancho", color: "#0000FF" },  
+            { id: "gata", nombre: "Estación Gata", color: "#FF0000" }       
         ];
 
         let indiceActual = 0;
@@ -168,7 +165,7 @@
 
             document.body.style.backgroundColor = estacion.color;
 
-            reproductor.src = "http://localhost:8000/" + estacion.id + "?t=" + new Date().getTime();
+            reproductor.src = "https://2022996070871b.lhr.life/" + estacion.id + "?t=" + new Date().getTime();
             reproductor.load();
             reproductor.play();
 
@@ -180,7 +177,7 @@
         function intentarReconexion() {
             document.getElementById('estado').innerText = "Cargando siguiente pista...";
             setTimeout(() => {
-                reproductor.src = "http://localhost:8000/" + estaciones[indiceActual].id + "?t=" + new Date().getTime();
+                reproductor.src = "https://2022996070871b.lhr.life/" + estaciones[indiceActual].id + "?t=" + new Date().getTime();
                 reproductor.load();
                 reproductor.play().then(() => {
                     document.getElementById('estado').innerText = "▶ Transmisión en vivo...";
