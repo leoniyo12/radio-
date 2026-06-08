@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Radio Felina </title>
+    <style>
+        /* Transición suave para el fondo */
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            color: #ffffff; 
+            text-align: center; 
+            padding-top: 10vh;
+            margin: 0;
+            background-color: #FFFF00; /* Iniciamos con Amarillo Puro */
+            transition: background-color 1s ease; 
+        }
+        
+        .radio-container {
+            background: rgba(0, 0, 0, 0.85);
+            padding: 50px;
+            border-radius: 20px;
+            display: inline-block;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+            max-width: 650px;
+            width: 90%;
+            border: 2px solid #333;
+        }
+
+        h1 { margin-top: 0; font-size: 3em; color: #f0f0f0; text-transform: uppercase; font-weight: 800; letter-spacing: 2px; }
+        
+        .dial {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 30px 0;
+        }
+
+        .flecha {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 5em;
+            cursor: pointer;
+            transition: transform 0.2s, color 0.3s;
+            line-height: 1;
+        }
+
+        .flecha:hover { transform: scale(1.15); color: #00ffcc; }
+
+        .info-estacion {
+            flex-grow: 1;
+            padding: 0 20px;
+        }
+
+        h2#nombre-estacion {
+            font-size: 2.2em;
+            margin: 0;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.8);
+            font-weight: 700;
+        }
+
+        p#nombre-cancion {
+            font-size: 1.1em;
+            color: #ccc;
+            margin: 5px 0 0 0;
+            font-weight: 400;
+        }
+
+        p#estado {
+            color: #00ffcc;
+            font-weight: bold;
+            letter-spacing: 1px;
+            animation: parpadeo 2s infinite;
+            margin-top: 15px;
+        }
+
+        /* OCULTAMOS EL REPRODUCTOR ORIGINAL */
+        audio {
+            display: none;
+        }
+
+        /* VISUALIZADOR ANIMADO CSS */
+        .visualizer {
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            height: 30px;
+            margin-top: 10px;
+        }
+        
+        .bar {
+            width: 5px;
+            background: #00ffcc;
+            margin: 0 3px;
+            border-radius: 2px;
+            animation: bar-animation 0.8s infinite;
+        }
+
+        .bar:nth-child(2) { animation-duration: 0.6s; animation-delay: 0.1s; }
+        .bar:nth-child(3) { animation-duration: 1.1s; animation-delay: -0.2s; }
+        .bar:nth-child(4) { animation-duration: 0.9s; animation-delay: 0.3s; }
+        .bar:nth-child(5) { animation-duration: 0.7s; animation-delay: -0.1s; }
+
+        @keyframes bar-animation {
+            0% { height: 5px; }
+            50% { height: 25px; }
+            100% { height: 5px; }
+        }
+
+        @keyframes parpadeo {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="radio-container">
+        <h1>radio felina</h1>
+        
+        <div class="dial">
+            <button class="flecha" onclick="cambiarEstacion(-1)">&#9664;</button>
+            
+            <div class="info-estacion">
+                <h2 id="nombre-estacion">Estación Ruso</h2>
+                <p id="nombre-cancion">Reproduciendo: musiquilla guapa</p>
+                <div class="visualizer">
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                </div>
+            </div>
+            
+            <button class="flecha" onclick="cambiarEstacion(1)">&#9654;</button>
+        </div>
+
+        <p id="estado">▶ Transmisión en vivo...</p>
+
+        <audio id="reproductor" controls autoplay preload="none">
+            <source src="http://localhost:8000/ruso" type="audio/mpeg">
+        </audio>
+    </div>
+
+    <script>
+        const estaciones = [
+            { id: "ruso", nombre: "Estación Ruso", color: "#FFFF00" },    // Amarillo Puro
+            { id: "pancho", nombre: "Estación Pancho", color: "#0000FF" },  // Azul Puro
+            { id: "gata", nombre: "Estación Gata", color: "#FF0000" }       // Rojo Puro
+        ];
+
+        let indiceActual = 0;
+        const reproductor = document.getElementById('reproductor');
+        const tituloEstacion = document.getElementById('nombre-estacion');
+        const tituloCancion = document.getElementById('nombre-cancion');
+
+        function cambiarEstacion(direccion) {
+            indiceActual += direccion;
+            if (indiceActual < 0) indiceActual = estaciones.length - 1;
+            if (indiceActual >= estaciones.length) indiceActual = 0;
+
+            const estacion = estaciones[indiceActual];
+
+            tituloEstacion.innerText = estacion.nombre;
+            tituloCancion.innerText = "Sintonizando metadatos..."; 
+
+            document.body.style.backgroundColor = estacion.color;
+
+            reproductor.src = "http://localhost:8000/" + estacion.id + "?t=" + new Date().getTime();
+            reproductor.load();
+            reproductor.play();
+
+            setTimeout(() => {
+                tituloCancion.innerText = "Reproduciendo: musiquilla guapa";
+            }, 1000);
+        }
+
+        function intentarReconexion() {
+            document.getElementById('estado').innerText = "Cargando siguiente pista...";
+            setTimeout(() => {
+                reproductor.src = "http://localhost:8000/" + estaciones[indiceActual].id + "?t=" + new Date().getTime();
+                reproductor.load();
+                reproductor.play().then(() => {
+                    document.getElementById('estado').innerText = "▶ Transmisión en vivo...";
+                }).catch(e => {
+                    intentarReconexion(); 
+                });
+            }, 2000); 
+        }
+
+        reproductor.addEventListener('ended', intentarReconexion);
+        reproductor.addEventListener('stalled', intentarReconexion);
+        reproductor.addEventListener('error', intentarReconexion);
+    </script>
+</body>
+</html>
